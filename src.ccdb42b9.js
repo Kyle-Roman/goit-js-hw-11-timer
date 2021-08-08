@@ -3,4 +3,4 @@ const t={selector:document.getElementById("timer - 1"),days:document.getElementB
 },{}],"Focm":[function(require,module,exports) {
 "use strict";require("./js/timer");
 },{"./js/timer":"yCUT"}]},{},["Focm"], null)
-//# sourceMappingURL=/parcel-project-template/src.ccdb42b9.js.map
+//# sourceMappingURL=/goit-js-hw-11-timer/src.ccdb42b9.js.map
