@@ -1,19 +1,8 @@
-const refs = {
-    selector: document.getElementById('timer - 1'),
-    days: document.getElementById('days'),
-    hours: document.getElementById('hours'),
-    mins: document.getElementById('mins'),
-    secs: document.getElementById('secs'),
-    startBtn: document.getElementById('startBtn'),
-    stopBtn: document.getElementById('stopBtn'),
-};
-
 class CountdownTimer {
     constructor({ selector, targetDate }) {
         this.intervalIsActive = false;
         this.targetDate = targetDate;
         this.selector = selector;
-        // this.start();
     }
 
     start() {
@@ -21,9 +10,9 @@ class CountdownTimer {
         this.intervalId = setInterval(() => {
             const currentTime = Date.now();
             const timeDiff = this.targetDate - currentTime;
-            const time = timeComponents(timeDiff);
+            const time = this.timeComponents(timeDiff);
 
-            updateTimer(time);
+            this.updateTimer(time);
         }, 1000);
     }
 
@@ -32,26 +21,35 @@ class CountdownTimer {
         this.intervalIsActive = false;
     }
 
-};
+    timeComponents(time) {
+        const days = this.pad(Math.floor(time / (1000 * 60 * 60 * 24)));
+        const hours = this.pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+        const mins = this.pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
+        const secs = this.pad(Math.floor((time % (1000 * 60)) / 1000));
 
-function updateTimer({ days, hours, mins, secs }) {
-    refs.days.textContent = `${days}`;
-    refs.hours.textContent = `${hours}`;
-    refs.mins.textContent = `${mins}`;
-    refs.secs.textContent = `${secs}`;
-};
+        return { days, hours, mins, secs };
+    }
 
-function timeComponents(time) {
-    const days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-    const hours = pad(Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-    const mins = pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-    const secs = pad(Math.floor((time % (1000 * 60)) / 1000));
+    pad(value) {
+        return String(value).padStart(2, '0');
+    }
 
-    return { days, hours, mins, secs };
-};
+    updateTimer({ days, hours, mins, secs }) {
+        const refs = this.getRefs();
+        refs.days.textContent = `${days}`;
+        refs.hours.textContent = `${hours}`;
+        refs.mins.textContent = `${mins}`;
+        refs.secs.textContent = `${secs}`;
+    }
 
-function pad(value) {
-    return String(value).padStart(2, '0');
+    getRefs() {
+        return {
+            days: document.querySelector(`${this.selector} [data-value="days"]`),
+            hours: document.querySelector(`${this.selector} [data-value="hours"]`),
+            mins: document.querySelector(`${this.selector} [data-value="mins"]`),
+            secs: document.querySelector(`${this.selector} [data-value="secs"]`),
+        };
+    }
 };
 
 
@@ -60,13 +58,28 @@ const timerPlugin = new CountdownTimer({
     targetDate: new Date('Nov 17, 2021'),
 });
 
-refs.stopBtn.addEventListener('click', () => {
+const timerPlugin2 = new CountdownTimer({
+    selector: '#timer-2',
+    targetDate: new Date('Nov 17, 2022'),
+});
+
+const btns = {
+    startBtn: document.getElementById('startBtn'),
+    stopBtn: document.getElementById('stopBtn'),
+};
+
+btns.stopBtn.addEventListener('click', () => {
     timerPlugin.stop();
 });
 
-refs.startBtn.addEventListener('click', () => {
+btns.startBtn.addEventListener('click', () => {
     timerPlugin.start();
 });
+
+const start2 = document.getElementById('startBtn2');
+start2.addEventListener('click', () => {
+    timerPlugin2.start();
+})
 
 
 // new CountdownTimer({
